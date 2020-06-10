@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useRef } from 'react';
 import {Route, Switch, Link} from 'react-router-dom';
 import './App.css';
 import HomePage from './pages/homepage/homepage.component';
@@ -19,9 +19,23 @@ class App extends Component {
 
 
   componentDidMount(){
-    this.unsubscribeFromAuth = auth.onAuthStateChanged( async users =>{
-      createUserProfileDocument(users)
-      console.log(users)
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth =>{
+      if(userAuth){
+        const userRef = await createUserProfileDocument(userAuth)
+
+        userRef.onSnapshot(snapShot => {
+          this.setState({
+            currentUser:{
+              id: snapShot.id,
+              ...snapShot.data()
+            }
+          }, () => {
+           
+          })
+        });
+        
+      }
+      this.setState({currentUser: userAuth})
     })
   }
 
