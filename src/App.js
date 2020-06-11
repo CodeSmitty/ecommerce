@@ -1,5 +1,5 @@
 import React, { Component, useRef } from 'react';
-import {Route, Switch, Link} from 'react-router-dom';
+import {Route, Switch, Redirect} from 'react-router-dom';
 import { connect } from 'react-redux';
 import './App.css';
 import HomePage from './pages/homepage/homepage.component';
@@ -50,14 +50,14 @@ class App extends Component {
     <Switch>
       <Route exact path="/" component={HomePage} />
       <Route path="/shop" component={ShopPage} />
-      <Route path="/signup" component={SignInSignUpPage} />
+      <Route exact path="/signin" render={() => this.props.currentUser ? (<Redirect to='/' />) : (<SignInSignUpPage />)}   />
     </Switch>
     </div>
   }
 }
 
-const mapStateToProps = state => ({
-  currentUser: state.user.currentUser
+const mapStateToProps = ({user}) => ({
+  currentUser: user.currentUser
 })
 
 
